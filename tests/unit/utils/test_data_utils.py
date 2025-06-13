@@ -1,6 +1,6 @@
 import pytest
 import polars as pl
-from utils.data_utils import clean_dataframe, balance_credit_fraud_df
+from utils.data_utils import CreditFraudDataframeUtils
 
 
 def test_clean_dataframe():
@@ -8,7 +8,7 @@ def test_clean_dataframe():
         {"A": [1, 2, None, 4, 5], "B": [None, 2, 3, 4, None], "C": [1, 2, 3, 4, 5]}
     )
 
-    current = clean_dataframe(df)
+    current = CreditFraudDataframeUtils.clean(df)
 
     expected = [{"A": 2, "B": 2, "C": 2}, {"A": 4, "B": 4, "C": 4}]
 
@@ -25,7 +25,7 @@ def test_clean_dataframe_no_nulls():
         {"A": [1, 2, None, 4, 5], "B": [None, 2, 3, 4, None], "C": [1, 2, 3, 4, 5]}
     )
 
-    cleaned = clean_dataframe(df)
+    cleaned = CreditFraudDataframeUtils.clean(df)
 
     assert cleaned.null_count().to_series().sum() == 0
 
@@ -43,7 +43,7 @@ def sample_input_df():
 
 
 def test_balance_credit_fraud_df_structure(sample_input_df):
-    result = balance_credit_fraud_df(sample_input_df)
+    result = CreditFraudDataframeUtils.balance(sample_input_df)
 
     assert isinstance(result, pl.DataFrame)
 
@@ -53,7 +53,7 @@ def test_balance_credit_fraud_df_structure(sample_input_df):
 
 
 def test_balance_credit_fraud_df_class_balance(sample_input_df):
-    result = balance_credit_fraud_df(sample_input_df)
+    result = CreditFraudDataframeUtils.balance(sample_input_df)
 
     counts_df = result.select(pl.col("Class").value_counts()).unnest("Class")
 
@@ -67,6 +67,6 @@ def test_balance_credit_fraud_df_class_balance(sample_input_df):
 
 
 def test_balance_credit_fraud_df_column_consistency(sample_input_df):
-    result = balance_credit_fraud_df(sample_input_df)
+    result = CreditFraudDataframeUtils.balance(sample_input_df)
 
     assert set(result.columns) == set(sample_input_df.columns)
