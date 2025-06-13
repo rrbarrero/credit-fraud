@@ -1,6 +1,7 @@
 from typing import Type
 import polars as pl
 from dataclasses import dataclass
+from balancers.balancer import BalancerProcol
 from features.feature import FeatureProcol
 from features.hour_of_day_feature import HourOfDayFeature
 from features.time_hours_feature import TimeHoursFeature
@@ -11,6 +12,7 @@ from utils.data_utils import (
 )
 from utils.filesystem_utils import DatasetLoader, DatasetLoaderProtocol
 from config import settings
+from balancers.oversampling_balancer import OversamplingBalancer
 
 
 @dataclass
@@ -39,7 +41,12 @@ class PipelineBuilder:
         self.df = self.dataframe_utils.clean(self.df)  # type: ignore
         return self
 
-    def add_features(self, features: list[Type[FeatureProcol]]) -> "PipelineBuilder":
+    def with_balancer(self, balancer: Type[BalancerProcol]) -> "PipelineBuilder":
+        self._ensure_loaded()
+        self.df = balancer(self.df).apply()  # type: ignore
+        return self
+
+    def with_features(self, features: list[Type[FeatureProcol]]) -> "PipelineBuilder":
         self._ensure_loaded()
         for feature in features:
             self.df = feature(self.df).apply()  # type: ignore
@@ -61,7 +68,8 @@ class PipelineBuilder:
             PipelineBuilder(DatasetLoader, DatasetCleaner)
             .load(dataset_path)
             .clean()
-            .add_features(features)
+            # .with_balancer(OversamplingBalancer)
+            .with_features(features)
             .build()
         )
 
