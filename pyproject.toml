@@ -24,3 +24,6 @@ pythonpath = [
   "src",
   "tests"
 ]
+markers = [
+  "acceptance: acceptance tests only on local"
+]
