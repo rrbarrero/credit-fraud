@@ -10,3 +10,6 @@ wheels/
 .venv
 
 dataset/
+.pytest_cache
+
+*checkpoint.ipynb
