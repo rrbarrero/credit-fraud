@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Tuple, Type
 import polars as pl
 from dataclasses import dataclass
 from balancers.balancer import BalancerProcol
@@ -12,12 +12,31 @@ from utils.data_utils import (
 )
 from utils.filesystem_utils import DatasetLoader, DatasetLoaderProtocol
 from config import settings
-from balancers.oversampling_balancer import OversamplingBalancer
+from sklearn.model_selection import train_test_split
 
 
 @dataclass
-class Pipeline:
+class DataPipeline:
     df: pl.DataFrame
+
+    @property
+    def X(self) -> pl.DataFrame:
+        return self.df.drop(["Class"])
+
+    @property
+    def y(self) -> pl.Series:
+        return self.df["Class"]
+
+    def split(
+        self, test_size: float = 0.3
+    ) -> Tuple[pl.DataFrame, pl.DataFrame, pl.Series, pl.Series]:
+        return train_test_split(
+            self.X.to_pandas(),
+            self.y.to_pandas(),
+            stratify=self.y.to_pandas(),
+            test_size=test_size,
+            random_state=42,
+        )  # type: ignore
 
 
 class PipelineBuilder:
@@ -28,52 +47,54 @@ class PipelineBuilder:
     ):
         self.dataset_loader = dataset_loader
         self.dataframe_utils = dataframe_utils
-        self.df = None
-        self.features: list[FeatureProcol] = []
+        self.features: list[Type[FeatureProcol]] = []
+        self.balancer: Type[BalancerProcol] | None = None
+        self.dataset_path: str | None = None
 
-    def load(self, file_path: str) -> "PipelineBuilder":
-        self.df = self.dataset_loader.handle(file_path)
-        return self
+    def _load(self) -> pl.DataFrame:
+        if self.dataset_path is None:
+            raise ValueError("Dataset path is not set. Use with_path() method first.")
+        return self.dataset_loader.handle(self.dataset_path)
 
-    def clean(self) -> "PipelineBuilder":
-        self._ensure_loaded()
+    def _clean(self, df: pl.DataFrame) -> pl.DataFrame:
+        return self.dataframe_utils.clean(df)
 
-        self.df = self.dataframe_utils.clean(self.df)  # type: ignore
+    def _apply_balancer(self, df: pl.DataFrame) -> pl.DataFrame:
+        if self.balancer:
+            return self.balancer(df).apply()  # type: ignore
+        return df
+
+    def with_path(self, dataset_path: str) -> "PipelineBuilder":
+        self.dataset_path = dataset_path
         return self
 
     def with_balancer(self, balancer: Type[BalancerProcol]) -> "PipelineBuilder":
-        self._ensure_loaded()
-        self.df = balancer(self.df).apply()  # type: ignore
+        self.balancer = balancer
         return self
 
     def with_features(self, features: list[Type[FeatureProcol]]) -> "PipelineBuilder":
-        self._ensure_loaded()
-        for feature in features:
-            self.df = feature(self.df).apply()  # type: ignore
+        self.features = features  # type: ignore
         return self
 
-    def build(self) -> Pipeline:
-        self._ensure_loaded()
+    def build(self) -> DataPipeline:
+        df = self._load()
+        df = self._clean(df)
+        df = self._apply_balancer(df)
+        for feature_class in self.features:
+            df = feature_class(df).apply()
 
-        return Pipeline(self.df)  # type: ignore
-
-    def _ensure_loaded(self):
-        if self.df is None:
-            raise ValueError("DataFrame is not loaded. Use load() method first.")
+        return DataPipeline(df)
 
     @classmethod
     def with_dataset(cls, dataset_path: str):
         features = [TimeHoursFeature, HourOfDayFeature, TimeSincePreviousFeature]
         return (
             PipelineBuilder(DatasetLoader, DatasetCleaner)
-            .load(dataset_path)
-            .clean()
-            # .with_balancer(OversamplingBalancer)
+            .with_path(dataset_path)
             .with_features(features)
-            .build()
         )
 
     @classmethod
     def default(cls):
         dataset_path = str(settings.data_path / "creditcard.csv.zip")
-        return PipelineBuilder.with_dataset(dataset_path)
+        return PipelineBuilder.with_dataset(dataset_path).build()
