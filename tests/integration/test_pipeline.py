@@ -1,14 +1,17 @@
 import polars as pl
 import pandas as pd
-from pipeline import DataPipeline, PipelineBuilder
+from pipeline import DataPipeline
 from config import settings
-from balancers.oversampling_balancer import OversamplingBalancer
+from factory import (
+    create_data_pipeline_from_path_without_balancer,
+    create_data_pipeline_from_path_with_oversampling_balancer,
+)
 
 
 def test_pipeline_builder():
-    current = PipelineBuilder.with_dataset(
+    current = create_data_pipeline_from_path_without_balancer(
         str(settings.fixtures_path / "fake_dataset.csv.zip")
-    ).build()
+    )
 
     assert isinstance(current.df, pl.DataFrame)
     assert current.df.shape == (10, 35)
@@ -52,12 +55,8 @@ def test_pipeline_builder():
 
 
 def test_data_pipeline_split():
-    pipeline = (
-        PipelineBuilder.with_dataset(
-            str(settings.fixtures_path / "fake_dataset.csv.zip")
-        )
-        .with_balancer(OversamplingBalancer)
-        .build()
+    pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
+        str(settings.fixtures_path / "fake_dataset.csv.zip")
     )
     assert isinstance(pipeline, DataPipeline)
 

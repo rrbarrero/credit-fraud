@@ -2,6 +2,7 @@ from typing import Tuple, Type
 import polars as pl
 from dataclasses import dataclass
 from balancers.balancer import BalancerProcol
+from balancers.oversampling_balancer import OversamplingBalancer
 from features.feature import FeatureProcol
 from features.hour_of_day_feature import HourOfDayFeature
 from features.time_hours_feature import TimeHoursFeature
@@ -86,15 +87,14 @@ class PipelineBuilder:
         return DataPipeline(df)
 
     @classmethod
-    def with_dataset(cls, dataset_path: str):
+    def default(cls):
+        dataset_path = str(settings.data_path / "creditcard.csv.zip")
         features = [TimeHoursFeature, HourOfDayFeature, TimeSincePreviousFeature]
         return (
             PipelineBuilder(DatasetLoader, DatasetCleaner)
             .with_path(dataset_path)
             .with_features(features)
+            .with_balancer(OversamplingBalancer)
+            .build()
         )
-
-    @classmethod
-    def default(cls):
-        dataset_path = str(settings.data_path / "creditcard.csv.zip")
         return PipelineBuilder.with_dataset(dataset_path).build()
