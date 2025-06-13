@@ -14,5 +14,9 @@ class Settings(BaseSettings):
     def data_path(self):
         return Path(self.project_path) / "dataset"
 
+    @property
+    def fixtures_path(self):
+        return Path(self.project_path) / "tests" / "__fixtures__"
+
 
 settings = Settings.load()
