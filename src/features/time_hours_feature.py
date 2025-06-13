@@ -6,5 +6,5 @@ class TimeHoursFeature:
         self.df = df
 
     def apply(self) -> pl.DataFrame:
-        df = self.df.with_columns((pl.col("Time") / 3600).alias("TimeHours"))
+        df = self.df.with_columns(((pl.col("Time") / 3600) % 24).alias("TimeHours"))
         return df

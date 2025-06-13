@@ -4,7 +4,7 @@ from imblearn.over_sampling import SMOTE
 import pandas as pd
 
 
-class CreditFraudDataframeUtilsProtocol(Protocol):
+class DatasetCleanerProtocol(Protocol):
     @staticmethod
     def clean(df: pl.DataFrame) -> pl.DataFrame: ...
 
@@ -12,7 +12,7 @@ class CreditFraudDataframeUtilsProtocol(Protocol):
     def balance(df: pl.DataFrame) -> pl.DataFrame: ...
 
 
-class CreditFraudDataframeUtils:
+class DatasetCleaner:
 
     @staticmethod
     def clean(df: pl.DataFrame) -> pl.DataFrame:

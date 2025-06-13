@@ -4,9 +4,10 @@ from dataclasses import dataclass
 from features.feature import FeatureProcol
 from features.hour_of_day_feature import HourOfDayFeature
 from features.time_hours_feature import TimeHoursFeature
+from features.time_since_previous_feature import TimeSincePreviousFeature
 from utils.data_utils import (
-    CreditFraudDataframeUtils,
-    CreditFraudDataframeUtilsProtocol,
+    DatasetCleaner,
+    DatasetCleanerProtocol,
 )
 from utils.filesystem_utils import DatasetLoader, DatasetLoaderProtocol
 from config import settings
@@ -21,7 +22,7 @@ class PipelineBuilder:
     def __init__(
         self,
         dataset_loader: DatasetLoaderProtocol,
-        dataframe_utils: CreditFraudDataframeUtilsProtocol,
+        dataframe_utils: DatasetCleanerProtocol,
     ):
         self.dataset_loader = dataset_loader
         self.dataframe_utils = dataframe_utils
@@ -55,11 +56,12 @@ class PipelineBuilder:
 
     @classmethod
     def with_dataset(cls, dataset_path: str):
+        features = [TimeHoursFeature, HourOfDayFeature, TimeSincePreviousFeature]
         return (
-            PipelineBuilder(DatasetLoader, CreditFraudDataframeUtils)
+            PipelineBuilder(DatasetLoader, DatasetCleaner)
             .load(dataset_path)
             .clean()
-            .add_features([TimeHoursFeature, HourOfDayFeature])
+            .add_features(features)
             .build()
         )
 
