@@ -1,3 +1,4 @@
+import random
 import polars as pl
 import pytest
 from polars.testing import assert_frame_equal
@@ -33,7 +34,6 @@ def test_individual_values(time_val, expected):
 
 
 def test_random_times():
-    import random
 
     random.seed(0)
     times = [random.randint(0, 1_000_000) for _ in range(200)]
