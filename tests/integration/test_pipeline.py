@@ -14,7 +14,7 @@ def test_pipeline_builder():
     )
 
     assert isinstance(current.df, pl.DataFrame)
-    assert current.df.shape == (10, 35)
+    assert current.df.shape == (10, 36)
     assert current.df.columns == [
         "Time",
         "V1",
@@ -51,6 +51,7 @@ def test_pipeline_builder():
         "HourOfDay",
         "TxnTime",
         "TimeSincePrevSec",
+        "isNight",
     ]
 
 

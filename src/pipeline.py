@@ -5,6 +5,7 @@ from balancers.balancer import BalancerProcol
 from balancers.oversampling_balancer import OversamplingBalancer
 from features.feature import FeatureProcol
 from features.hour_of_day_feature import HourOfDayFeature
+from features.is_night_feature import IsNightFeature
 from features.time_hours_feature import TimeHoursFeature
 from features.time_since_previous_feature import TimeSincePreviousFeature
 from utils.data_utils import (
@@ -86,14 +87,23 @@ class PipelineBuilder:
 
         return DataPipeline(df)
 
+    @staticmethod
+    def get_standards_features():
+        return [
+            TimeHoursFeature,
+            HourOfDayFeature,
+            TimeSincePreviousFeature,
+            IsNightFeature,
+        ]
+
     @classmethod
     def default(cls):
         dataset_path = str(settings.data_path / "creditcard.csv.zip")
-        features = [TimeHoursFeature, HourOfDayFeature, TimeSincePreviousFeature]
+
         return (
             PipelineBuilder(DatasetLoader, DatasetCleaner)
             .with_path(dataset_path)
-            .with_features(features)
+            .with_features(cls.get_standards_features())
             .with_balancer(OversamplingBalancer)
             .build()
         )
