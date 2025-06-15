@@ -27,7 +27,7 @@ The project has been developed following **Clean Code** principles and is suppor
 
 ### Learnings & Technical Experience
 
-I initially attempted to use **Polars** for data manipulation, as I find its syntax highly efficient and expressive. However, I encountered challenges with its integration into the broader ecosystem, particularly with libraries like **scikit-learn**. This lack of seamless compatibility made it less practical for this project, so I reverted to more established libraries to ensure a smoother workflow.
+I initially attempted to use **Polars** for data manipulation, as I find its syntax highly efficient and expressive. However, I encountered challenges with its integration into the broader ecosystem, particularly with libraries like **scikit-learn**. This lack of seamless compatibility made it less practical for this project.
 
 ### Current Status & Future Work
 
