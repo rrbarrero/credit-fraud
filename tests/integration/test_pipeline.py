@@ -78,3 +78,20 @@ def test_data_pipeline_split():
     assert X_test.shape == (expected_test, n_features)
     assert y_train.shape == (expected_train,)
     assert y_test.shape == (expected_test,)
+
+
+def test_split_is_deterministic():
+    pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
+        str(settings.fixtures_path / "fake_dataset.csv.zip")
+    )
+    assert isinstance(pipeline, DataPipeline)
+
+    test_size = 0.1
+    X_train, X_test, y_train, y_test = pipeline.split(test_size=test_size)
+
+    X_train_2, X_test_2, y_train_2, y_test_2 = pipeline.split(test_size=test_size)
+
+    assert X_train.equals(X_train_2)
+    assert X_test.equals(X_test_2)
+    assert y_train.equals(y_train_2)
+    assert y_test.equals(y_test_2)
