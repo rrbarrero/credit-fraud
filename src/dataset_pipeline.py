@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 
 
 @dataclass
-class DataPipeline:
+class DatasetPipeline:
     df: pl.DataFrame
     balancer: Type[BalancerProtocol] = OversamplingBalancer
 
@@ -92,7 +92,7 @@ class DataPipeline:
         return X_tr_bal, X_te_pd, y_tr_bal, y_te_pd
 
 
-class PipelineBuilder:
+class DatasetPipelineBuilder:
     def __init__(
         self,
         dataset_loader: DatasetLoaderProtocol,
@@ -111,22 +111,24 @@ class PipelineBuilder:
     def _clean(self, df: pl.DataFrame) -> pl.DataFrame:
         return self.dataframe_utils.clean(df)
 
-    def with_path(self, dataset_path: str) -> "PipelineBuilder":
+    def with_path(self, dataset_path: str) -> "DatasetPipelineBuilder":
         self.dataset_path = dataset_path
         return self
 
-    def with_features(self, features: list[Type[FeatureProcol]]) -> "PipelineBuilder":
+    def with_features(
+        self, features: list[Type[FeatureProcol]]
+    ) -> "DatasetPipelineBuilder":
         self.features = features  # type: ignore
         return self
 
-    def build(self) -> DataPipeline:
+    def build(self) -> DatasetPipeline:
         df = self._load()
         df = self._clean(df)
 
         for feature_class in self.features:
             df = feature_class(df).apply()
 
-        return DataPipeline(df)
+        return DatasetPipeline(df)
 
     @staticmethod
     def get_standards_features():
@@ -144,7 +146,7 @@ class PipelineBuilder:
         dataset_path = str(settings.data_path / "creditcard.csv.zip")
 
         return (
-            PipelineBuilder(DatasetLoader, DatasetCleaner)
+            DatasetPipelineBuilder(DatasetLoader, DatasetCleaner)
             .with_path(dataset_path)
             .with_features(cls.get_standards_features())
             .build()

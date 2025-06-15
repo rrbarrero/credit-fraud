@@ -7,7 +7,7 @@ from features.hour_of_day_feature import HourOfDayFeature
 from features.is_night_feature import IsNightFeature
 from features.time_hours_feature import TimeHoursFeature
 from features.time_since_previous_feature import TimeSincePreviousFeature
-from pipeline import DataPipeline, PipelineBuilder
+from dataset_pipeline import DatasetPipeline, DatasetPipelineBuilder
 from config import settings
 from factory import (
     create_data_pipeline_from_path_without_balancer,
@@ -69,7 +69,7 @@ def test_data_pipeline_split():
     pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
         str(settings.fixtures_path / "fake_dataset.csv.zip")
     )
-    assert isinstance(pipeline, DataPipeline)
+    assert isinstance(pipeline, DatasetPipeline)
 
     test_size = 0.20
     X_tr, X_te, y_tr, y_te = pipeline.split(test_size=test_size, use_cache=False)
@@ -97,7 +97,7 @@ def test_split_is_deterministic():
     pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
         str(settings.fixtures_path / "fake_dataset.csv.zip")
     )
-    assert isinstance(pipeline, DataPipeline)
+    assert isinstance(pipeline, DatasetPipeline)
 
     test_size = 0.2
     X_train, X_test, y_train, y_test = pipeline.split(test_size=test_size)
@@ -111,7 +111,7 @@ def test_split_is_deterministic():
 
 
 def test_get_feature_list():
-    assert PipelineBuilder.get_standards_features() == [
+    assert DatasetPipelineBuilder.get_standards_features() == [
         TimeHoursFeature,
         HourOfDayFeature,
         TimeSincePreviousFeature,
