@@ -3,7 +3,7 @@ import polars as pl
 
 class IsNightFeature:
     def __init__(
-        self, df: pl.DataFrame, night_start: int = 23, night_end: int = 8
+        self, df: pl.DataFrame, night_start: int = 1, night_end: int = 7
     ) -> None:
         self.df = df
         self.night_start = night_start
