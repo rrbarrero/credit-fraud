@@ -18,5 +18,9 @@ class Settings(BaseSettings):
     def fixtures_path(self):
         return Path(self.project_path) / "tests" / "__fixtures__"
 
+    @property
+    def cache_path(self):
+        return Path(self.project_path) / "cache"
+
 
 settings = Settings.load()

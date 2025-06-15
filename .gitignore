@@ -13,3 +13,5 @@ dataset/
 .pytest_cache
 
 *checkpoint.ipynb
+
+cache

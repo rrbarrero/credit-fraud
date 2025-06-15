@@ -2,21 +2,26 @@ import polars as pl
 
 
 class TimeSincePreviousFeature:
+
     def __init__(self, df: pl.DataFrame) -> None:
         self.df = df
 
     def apply(self) -> pl.DataFrame:
-        df = (
-            self.df.lazy()
-            .with_columns(pl.duration(seconds=pl.col("Time")).alias("TxnTime"))
-            .sort("TxnTime")
-            .with_columns(
-                pl.col("TxnTime")
-                .diff()
-                .dt.total_seconds()
+
+        df = self.df.sort("Time")
+
+        df = df.with_columns(
+            [
+                pl.col("Time")
+                .diff(1)
                 .fill_null(0)
+                .cast(pl.Float64)
                 .alias("TimeSincePrevSec")
-            )
-            .collect()
+            ]
         )
+
+        df = df.with_columns(
+            [(pl.col("Time") % 86400).cast(pl.Float64).alias("TxnTimeSec")]
+        )
+
         return df

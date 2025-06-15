@@ -1,7 +1,11 @@
-from typing import Protocol
-import polars as pl
+from typing import Protocol, Tuple
+import pandas as pd
 
 
-class BalancerProcol(Protocol):
-    def __init__(self, df: pl.DataFrame) -> None: ...
-    def apply(self) -> pl.DataFrame: ...
+class BalancerProtocol(Protocol):
+    def fit_resample(
+        self,
+        X_train: pd.DataFrame,
+        y_train: pd.Series,
+        X_test: pd.DataFrame,
+    ) -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame]: ...

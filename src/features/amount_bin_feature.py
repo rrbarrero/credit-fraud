@@ -15,7 +15,7 @@ class AmountBinFeature:
         self.labels = (
             labels
             if labels is not None
-            else ["<10", "10-50", "50-100", "100-500", "500-1000", ">=1000"]
+            else ["lt10", "10-50", "50-100", "100-500", "500-1000", "gte1000"]
         )
         if len(self.labels) != len(self.bins) + 1:
             raise ValueError("Wrong number of labels, they have to be len(bins) + 1")

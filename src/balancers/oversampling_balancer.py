@@ -1,27 +1,63 @@
-import polars as pl
+from typing import Tuple
 from imblearn.over_sampling import SMOTE
+from collections import Counter
+from imblearn.combine import SMOTETomek
+from imblearn.pipeline import Pipeline as ImbPipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
 
 
 class OversamplingBalancer:
-    def __init__(self, df: pl.DataFrame) -> None:
-        self.df = df
 
-    def apply(self) -> pl.DataFrame:
-        df = self.df.unique()
+    def __init__(self, k_max: int = 5, random_state: int = 42) -> None:
+        self.k_max = k_max
+        self.random_state = random_state
 
-        df_pd = df.to_pandas()
-        X = df_pd.drop(columns=["Class"])
-        y = df_pd["Class"]
+    def _adaptive_k(self, y: pd.Series) -> int:
+        n_min = min(Counter(y).values())
+        return max(1, min(self.k_max, n_min - 1))
 
-        smote = SMOTE(k_neighbors=1, random_state=42)
-        result = smote.fit_resample(X, y)
-        if len(result) == 2:
-            X_resampled, y_resampled = result
-        else:
-            X_resampled, y_resampled, _ = result
+    def fit_resample(
+        self,
+        X_train: pd.DataFrame,
+        y_train: pd.Series,
+        X_test: pd.DataFrame,
+    ) -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
 
-        df_resampled = pl.DataFrame(pd.DataFrame(X_resampled, columns=X.columns))
-        df_resampled = df_resampled.with_columns(pl.Series("Class", y_resampled))
+        k = self._adaptive_k(y_train)
 
-        return df_resampled
+        preproc = ColumnTransformer(
+            transformers=[
+                (
+                    "ohe",
+                    OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                    ["amountBin"],
+                )
+            ],
+            remainder="passthrough",
+        )
+
+        smt = SMOTETomek(
+            random_state=self.random_state,
+            smote=SMOTE(k_neighbors=k, random_state=self.random_state),
+        )
+
+        pipe = ImbPipeline(
+            [
+                ("encode", preproc),
+                ("balance", smt),
+            ]
+        )
+
+        X_train_bal, y_train_bal = pipe.fit_resample(X_train, y_train)  # type: ignore
+
+        X_test_enc = pipe.named_steps["encode"].transform(X_test)
+        cols = pipe.named_steps["encode"].get_feature_names_out(X_train.columns)
+        X_test_bal = pd.DataFrame(X_test_enc, columns=cols, index=X_test.index)
+
+        return (
+            pd.DataFrame(X_train_bal, columns=cols),
+            y_train_bal,
+            X_test_bal,
+        )

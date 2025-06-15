@@ -11,14 +11,16 @@ def test_time_since_previous_feature_simple():
 
     df_expected = (
         df_input.lazy()
-        .with_columns(pl.duration(seconds=pl.col("Time")).alias("TxnTime"))
-        .sort("TxnTime")
+        .sort("Time")
         .with_columns(
-            pl.col("TxnTime")
-            .diff()
-            .dt.total_seconds()
-            .fill_null(0)
-            .alias("TimeSincePrevSec")
+            [
+                pl.col("Time")
+                .diff(1)
+                .fill_null(0)
+                .cast(pl.Float64)
+                .alias("TimeSincePrevSec"),
+                ((pl.col("Time") % 86400).floor().cast(pl.Float64)).alias("TxnTimeSec"),
+            ]
         )
         .collect()
     )
@@ -33,9 +35,7 @@ def random_df():
 
 def test_with_unsorted_times(random_df):
     df_input = random_df.sample(fraction=1.0, shuffle=True, seed=0)
-
-    transformer = TimeSincePreviousFeature(df_input)
-    df_out = transformer.apply()
+    df_out = TimeSincePreviousFeature(df_input).apply()
 
     times = df_out["Time"].to_list()
     assert times == sorted(times)
@@ -43,3 +43,6 @@ def test_with_unsorted_times(random_df):
     diffs = df_out["TimeSincePrevSec"].to_list()
     expected_diffs = [0.0] + [curr - prev for prev, curr in zip(times, times[1:])]
     assert diffs == expected_diffs
+
+    txn_secs = df_out["TxnTimeSec"].to_list()
+    assert txn_secs == [float(t % 86400) for t in times]

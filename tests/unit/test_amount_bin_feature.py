@@ -6,8 +6,8 @@ from features.amount_bin_feature import AmountBinFeature
 @pytest.mark.parametrize(
     "amount, expected",
     [
-        (0, "<10"),
-        (9.99, "<10"),
+        (0, "lt10"),
+        (9.99, "lt10"),
         (10, "10-50"),
         (49.99, "10-50"),
         (50, "50-100"),
@@ -16,8 +16,8 @@ from features.amount_bin_feature import AmountBinFeature
         (499.99, "100-500"),
         (500, "500-1000"),
         (999.99, "500-1000"),
-        (1000, ">=1000"),
-        (1_000_000, ">=1000"),
+        (1000, "gte1000"),
+        (1_000_000, "gte1000"),
     ],
 )
 def test_amount_bin_default(amount, expected):
@@ -31,7 +31,7 @@ def test_amount_bin_multiple_values():
     amounts = [0, 10, 50, 500, 1000, 2000]
     df = pl.DataFrame({"Amount": amounts})
     out = AmountBinFeature(df).apply()
-    expected = ["<10", "10-50", "50-100", "500-1000", ">=1000", ">=1000"]
+    expected = ["lt10", "10-50", "50-100", "500-1000", "gte1000", "gte1000"]
     assert out["amountBin"].to_list() == expected
 
 

@@ -1,5 +1,6 @@
 import polars as pl
 import pandas as pd
+import numpy as np
 from features.amount_bin_feature import AmountBinFeature
 from features.amount_log_feature import AmountLogFeature
 from features.hour_of_day_feature import HourOfDayFeature
@@ -21,7 +22,7 @@ def test_pipeline_builder():
 
     assert isinstance(current.df, pl.DataFrame)
     assert current.df.shape == (10, 38)
-    assert current.df.columns == [
+    assert set(current.df.columns) == {
         "Time",
         "V1",
         "V2",
@@ -55,38 +56,41 @@ def test_pipeline_builder():
         "Class",
         "TimeHours",
         "HourOfDay",
-        "TxnTime",
+        "TxnTimeSec",
         "TimeSincePrevSec",
         "isNight",
         "amountLog",
         "amountBin",
-    ]
+    }
 
 
 def test_data_pipeline_split():
+
     pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
         str(settings.fixtures_path / "fake_dataset.csv.zip")
     )
     assert isinstance(pipeline, DataPipeline)
 
-    test_size = 0.5
-    X_train, X_test, y_train, y_test = pipeline.split(test_size=test_size)
+    test_size = 0.20
+    X_tr, X_te, y_tr, y_te = pipeline.split(test_size=test_size, use_cache=False)
 
-    assert isinstance(X_train, pd.DataFrame)
-    assert isinstance(X_test, pd.DataFrame)
-    assert isinstance(y_train, pd.Series)
-    assert isinstance(y_test, pd.Series)
+    assert isinstance(X_tr, pd.DataFrame)
+    assert isinstance(X_te, pd.DataFrame)
+    assert isinstance(y_tr, pd.Series)
+    assert isinstance(y_te, pd.Series)
 
-    total_rows = pipeline.df.shape[0]
-    expected_train = int(total_rows * (1 - test_size))
-    expected_test = total_rows - expected_train
+    total_rows = len(pipeline.df)
+    expected_test = int(np.ceil(total_rows * test_size))
+    assert len(X_te) == expected_test
+    assert len(y_te) == expected_test
 
-    n_features = pipeline.df.shape[1] - 1
+    counts = y_tr.value_counts().to_dict()
+    assert counts[0] == counts[1]
 
-    assert X_train.shape == (expected_train, n_features)
-    assert X_test.shape == (expected_test, n_features)
-    assert y_train.shape == (expected_train,)
-    assert y_test.shape == (expected_test,)
+    assert list(X_tr.columns) == list(X_te.columns)
+    assert "amountBin" not in X_tr.columns
+    assert X_tr.select_dtypes(include="object").empty
+    assert X_te.select_dtypes(include="object").empty
 
 
 def test_split_is_deterministic():
@@ -95,7 +99,7 @@ def test_split_is_deterministic():
     )
     assert isinstance(pipeline, DataPipeline)
 
-    test_size = 0.1
+    test_size = 0.2
     X_train, X_test, y_train, y_test = pipeline.split(test_size=test_size)
 
     X_train_2, X_test_2, y_train_2, y_test_2 = pipeline.split(test_size=test_size)

@@ -22,6 +22,5 @@ def create_data_pipeline_from_path_with_oversampling_balancer(path: str):
         PipelineBuilder(DatasetLoader, DatasetCleaner)
         .with_path(path)
         .with_features(PipelineBuilder.get_standards_features())
-        .with_balancer(OversamplingBalancer)
         .build()
     )
