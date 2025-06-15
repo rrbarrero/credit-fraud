@@ -97,4 +97,3 @@ class PipelineBuilder:
             .with_balancer(OversamplingBalancer)
             .build()
         )
-        return PipelineBuilder.with_dataset(dataset_path).build()
