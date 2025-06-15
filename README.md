@@ -45,35 +45,35 @@ The evaluation metrics for the initial model, `xgboost_v1`, are detailed below.
 
 <pre>
 EvaluationResult(
-model_name='xgboost_v1',
-accuracy=0.9995418125425879,
-pr_auc=0.834454585983577,
-per_class={
-'0': {
-'precision': 0.999658803459027,
-'recall': 0.9998823197138016,
-'f1-score': 0.9997705490936689,
-'support': 84976.0
-},
-'1': {
-'precision': 0.9186991869918699,
-'recall': 0.795774647887324,
-'f1-score': 0.8528301886792453,
-'support': 142.0
-}
-},
-macro_avg={
-'precision': 0.9591789952254485,
-'recall': 0.8978284838005628,
-'f1-score': 0.9263003688864571,
-'support': 85118.0
-},
-weighted_avg={
-'precision': 0.999523740775008,
-'recall': 0.9995418125425879,
-'f1-score': 0.9995254125634538,
-'support': 85118.0
-}
+    model_name='xgboost_v1',
+    accuracy=0.9995418125425879,
+    pr_auc=0.834454585983577,
+    per_class={
+        '0': {
+            'precision': 0.999658803459027,
+            'recall': 0.9998823197138016,
+            'f1-score': 0.9997705490936689,
+            'support': 84976.0
+        },
+        '1': {
+            'precision': 0.9186991869918699,
+            'recall': 0.795774647887324,
+            'f1-score': 0.8528301886792453,
+            'support': 142.0
+        }
+    },
+    macro_avg={
+        'precision': 0.9591789952254485,
+        'recall': 0.8978284838005628,
+        'f1-score': 0.9263003688864571,
+        'support': 85118.0
+    },
+    weighted_avg={
+        'precision': 0.999523740775008,
+        'recall': 0.9995418125425879,
+        'f1-score': 0.9995254125634538,
+        'support': 85118.0
+    }
 )
 
 </pre>
