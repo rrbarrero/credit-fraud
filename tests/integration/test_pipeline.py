@@ -1,6 +1,11 @@
 import polars as pl
 import pandas as pd
-from pipeline import DataPipeline
+from features.amount_log_feature import AmountLogFeature
+from features.hour_of_day_feature import HourOfDayFeature
+from features.is_night_feature import IsNightFeature
+from features.time_hours_feature import TimeHoursFeature
+from features.time_since_previous_feature import TimeSincePreviousFeature
+from pipeline import DataPipeline, PipelineBuilder
 from config import settings
 from factory import (
     create_data_pipeline_from_path_without_balancer,
@@ -97,3 +102,13 @@ def test_split_is_deterministic():
     assert X_test.equals(X_test_2)
     assert y_train.equals(y_train_2)
     assert y_test.equals(y_test_2)
+
+
+def test_get_feature_list():
+    assert PipelineBuilder.get_standards_features() == [
+        TimeHoursFeature,
+        HourOfDayFeature,
+        TimeSincePreviousFeature,
+        IsNightFeature,
+        AmountLogFeature,
+    ]
