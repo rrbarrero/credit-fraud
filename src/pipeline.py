@@ -3,6 +3,7 @@ import polars as pl
 from dataclasses import dataclass
 from balancers.balancer import BalancerProcol
 from balancers.oversampling_balancer import OversamplingBalancer
+from features.amount_bin_feature import AmountBinFeature
 from features.amount_log_feature import AmountLogFeature
 from features.feature import FeatureProcol
 from features.hour_of_day_feature import HourOfDayFeature
@@ -96,6 +97,7 @@ class PipelineBuilder:
             TimeSincePreviousFeature,
             IsNightFeature,
             AmountLogFeature,
+            AmountBinFeature,
         ]
 
     @classmethod

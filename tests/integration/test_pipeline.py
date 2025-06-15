@@ -1,5 +1,6 @@
 import polars as pl
 import pandas as pd
+from features.amount_bin_feature import AmountBinFeature
 from features.amount_log_feature import AmountLogFeature
 from features.hour_of_day_feature import HourOfDayFeature
 from features.is_night_feature import IsNightFeature
@@ -19,7 +20,7 @@ def test_pipeline_builder():
     )
 
     assert isinstance(current.df, pl.DataFrame)
-    assert current.df.shape == (10, 37)
+    assert current.df.shape == (10, 38)
     assert current.df.columns == [
         "Time",
         "V1",
@@ -58,6 +59,7 @@ def test_pipeline_builder():
         "TimeSincePrevSec",
         "isNight",
         "amountLog",
+        "amountBin",
     ]
 
 
@@ -111,4 +113,5 @@ def test_get_feature_list():
         TimeSincePreviousFeature,
         IsNightFeature,
         AmountLogFeature,
+        AmountBinFeature,
     ]
