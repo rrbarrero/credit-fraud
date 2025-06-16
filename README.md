@@ -1,6 +1,6 @@
 # Kaggle Credit Fraud Detection Challenge
 
-This repository contains my solution approach for the [Kaggle Credit Fraud Detection challenge](https://www.kaggle.com/competitions/creditcardfraud). The primary goal is to build a model that accurately identifies fraudulent credit card transactions.
+This repository contains my solution approach for the [Kaggle Credit Fraud Detection challenge](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). The primary goal is to build a model that accurately identifies fraudulent credit card transactions.
 
 ## Getting Started
 
@@ -8,7 +8,7 @@ To run this project, follow these steps:
 
 1.  Download the dataset from the Kaggle competition page.
 2.  Place the dataset files inside a `dataset/` folder at the root of the project.
-3.  Execute the entire pipeline using the following command:
+3.  Execute the entire pipeline using the following command (*you will need uv*):
     ```sh
     make run
     ```
@@ -27,7 +27,11 @@ The project has been developed following **Clean Code** principles and is suppor
 
 ### Learnings & Technical Experience
 
-I initially attempted to use **Polars** for data manipulation, as I find its syntax highly efficient and expressive. However, I encountered challenges with its integration into the broader ecosystem, particularly with libraries like **scikit-learn**. This lack of seamless compatibility made it less practical for this project.
+> [!IMPORTANT] 
+> I initially attempted to use **Polars** for data manipulation, as I find its 
+> syntax highly efficient and expressive. However, I encountered challenges with 
+> its >integration into the broader ecosystem, particularly with libraries like 
+> **scikit-learn**. This lack of seamless compatibility made it less practical for > this project.
 
 ### Current Status & Future Work
 
@@ -35,9 +39,9 @@ While the current implementation is functional, there is still some degree of co
 
 My immediate future plans include:
 
-* **Code Refactoring**: Decouple components to improve maintainability.
-* **Model Comparison**: Add other classification models (such as LightGBM, CatBoost, or Logistic Regression) to the pipeline and compare their performance.
 * **Feature Engineering**: Explore new features to enhance model accuracy.
+* **Model Comparison**: Add other classification models (such as LightGBM, CatBoost, or Logistic Regression) to the pipeline and compare their performance.
+* **Code Refactoring**: Decouple components to improve maintainability.
 
 ### Current Results
 
@@ -75,5 +79,4 @@ EvaluationResult(
         'support': 85118.0
     }
 )
-
 </pre>
