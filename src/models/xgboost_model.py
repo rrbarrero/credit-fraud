@@ -4,15 +4,17 @@ from sklearn.metrics import classification_report, precision_recall_curve, auc
 
 from models.model_protocol import EvaluationResult
 from dataset_pipeline import DatasetPipeline
+from config import settings
 
 
 class XGBoostModel:
-    def __init__(self, dataset_pipeline: DatasetPipeline):
-        self.dataset_pipeline = dataset_pipeline
+    def __init__(self, random_state: int | None = None):
 
-    def run(self) -> EvaluationResult:
+        self.random_state = random_state or settings.random_state
 
-        X_train, X_test, y_train, y_test = self.dataset_pipeline.split(
+    def run(self, dataset_pipeline: DatasetPipeline) -> EvaluationResult:
+
+        X_train, X_test, y_train, y_test = dataset_pipeline.split(
             test_size=0.3, use_cache=True
         )
 
@@ -27,7 +29,7 @@ class XGBoostModel:
                         objective="binary:logistic",
                         eval_metric="logloss",
                         scale_pos_weight=scale_pos_weight,
-                        random_state=42,
+                        random_state=self.random_state,
                         n_jobs=-1,
                     ),
                 )

@@ -6,13 +6,14 @@ from imblearn.pipeline import Pipeline as ImbPipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
+from config import settings
 
 
 class OversamplingBalancer:
 
-    def __init__(self, k_max: int = 5, random_state: int = 42) -> None:
+    def __init__(self, k_max: int = 5, random_state: int | None = None) -> None:
         self.k_max = k_max
-        self.random_state = random_state
+        self.random_state = random_state or settings.random_state
 
     def _adaptive_k(self, y: pd.Series) -> int:
         n_min = min(Counter(y).values())

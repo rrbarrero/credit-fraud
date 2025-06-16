@@ -10,4 +10,4 @@ class ModelsPipeline:
         self.dataset_pipeline = dataset_pipeline
 
     def evaluate(self) -> list[EvaluationResult]:
-        return [model(self.dataset_pipeline).run() for model in self.models]
+        return [model().run(self.dataset_pipeline) for model in self.models]

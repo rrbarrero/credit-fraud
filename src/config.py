@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     project_path: str
+    random_state: int = 42
 
     @classmethod
     def load(cls):
