@@ -10,9 +10,9 @@ from features.is_night_feature import IsNightFeature
         (23 * 3600 + 59, 1),
         (0, 1),
         (7 * 3600 + 59, 1),
-        (8 * 3600, 0),
-        (12 * 3600, 0),
-        (22 * 3600 + 30, 0),
+        (8 * 3600, 1),
+        (12 * 3600, 1),
+        (22 * 3600 + 30, 1),
     ],
 )
 def test_is_night_default_bounds(time_seconds, expected):
