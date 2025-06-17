@@ -113,6 +113,6 @@ With parameters from grid_search:
     pr_auc=np.float64(0.8354554023593456))]
 </pre>
 
-> [!INFO]
+> [!NOTE]
 > Given that in fraud detection, recall (catching all fraud instances) is often prioritized, a small gain in recall might be considered valuable, > even if it comes with a minor trade-off in precision. The fact that PR-AUC also improved, albeit marginally, suggests the optimized model is 
 > indeed slightly better at balancing precision and recall across various thresholds."""
