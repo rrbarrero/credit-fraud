@@ -76,7 +76,43 @@ EvaluationResult(
         'precision': 0.999523740775008,
         'recall': 0.9995418125425879,
         'f1-score': 0.9995254125634538,
-        'support': 85118.0
-    }
-)
+        'support': 85118.0})
 </pre>
+
+### Iteration n2
+
+With parameters from grid_search:
+
+<pre>
+[EvaluationResult(
+    model_name='xgboost_v1', 
+    per_class={
+        '0': {
+            'precision': 0.9996705378469648, 
+            'recall': 0.9997999435134626, 
+            'f1-score': 0.9997352364926484, 
+            'support': 84976.0}, 
+        '1': {
+            'precision': 0.8702290076335878, 
+            'recall': 0.8028169014084507, 
+            'f1-score': 0.8351648351648352, 
+            'support': 142.0}
+        }, 
+    accuracy=0.9994713221645245, 
+    macro_avg={
+        'precision': 0.9349497727402762, 
+        'recall': 0.9013084224609567, 
+        'f1-score': 0.9174500358287418, 
+        'support': 85118.0
+    }, 
+    weighted_avg={
+        'precision': 0.9994545941301212, 
+        'recall': 0.9994713221645245, 
+        'f1-score': 0.9994606882538676, 
+        'support': 85118.0}, 
+    pr_auc=np.float64(0.8354554023593456))]
+</pre>
+
+> [!INFO]
+> Given that in fraud detection, recall (catching all fraud instances) is often prioritized, a small gain in recall might be considered valuable, > even if it comes with a minor trade-off in precision. The fact that PR-AUC also improved, albeit marginally, suggests the optimized model is 
+> indeed slightly better at balancing precision and recall across various thresholds."""

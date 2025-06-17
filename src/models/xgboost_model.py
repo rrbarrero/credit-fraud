@@ -31,6 +31,12 @@ class XGBoostModel:
                         scale_pos_weight=scale_pos_weight,
                         random_state=self.random_state,
                         n_jobs=-1,
+                        colsample_bytree=0.7,
+                        gamma=0,
+                        learning_rate=0.05,
+                        max_depth=7,
+                        n_estimators=300,
+                        subsample=0.7,
                     ),
                 )
             ]
