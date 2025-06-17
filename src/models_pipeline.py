@@ -1,5 +1,6 @@
 from dataset_pipeline import DatasetPipeline
-from models.model_protocol import EvaluationResult, ModelProtocol
+from domain.evaluation_result import EvaluationResult
+from models.model_protocol import ModelProtocol
 
 
 class ModelsPipeline:

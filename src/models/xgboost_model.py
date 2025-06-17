@@ -2,7 +2,7 @@ from xgboost import XGBClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report, precision_recall_curve, auc
 
-from models.model_protocol import EvaluationResult
+from domain.evaluation_result import EvaluationResult
 from dataset_pipeline import DatasetPipeline
 from config import settings
 

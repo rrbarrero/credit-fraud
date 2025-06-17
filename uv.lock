@@ -361,6 +361,8 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
+]
+gpu = [
     { name = "torch" },
 ]
 
@@ -377,10 +379,8 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.4.0" },
-    { name = "torch", specifier = ">=2.7.1" },
-]
+dev = [{ name = "pytest", specifier = ">=8.4.0" }]
+gpu = [{ name = "torch", specifier = ">=2.7.1" }]
 
 [[package]]
 name = "fsspec"
