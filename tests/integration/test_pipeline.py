@@ -1,9 +1,8 @@
-import os
 from inspect import isclass
 import polars as pl
 import pandas as pd
 import numpy as np
-from dataset_pipeline import DatasetPipeline
+from dataset_pipeline import DatasetPipeline, DatasetPipelineBuilder
 from config import settings
 from factory import (
     create_data_pipeline_from_path_without_balancer,
@@ -111,9 +110,8 @@ def test_split_is_deterministic():
 
 
 def test_dynamic_feature_loading():
-    features_path = os.path.join(settings.project_path, "src", "features")
 
-    loaded_features = load_features_from_path(features_path)
+    loaded_features = DatasetPipelineBuilder.get_standards_features()
 
     assert len(loaded_features) == 7
 

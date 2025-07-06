@@ -137,9 +137,7 @@ class DatasetPipelineBuilder:
 
     @staticmethod
     def get_standards_features() -> list[Type[FeatureProcol]]:
-        features_path = os.path.join(settings.project_path, "src", "features")
-
-        return load_features_from_path(features_path)
+        return load_features_from_path(str(settings.features_path))
 
     def build(self) -> DatasetPipeline:
         df = self._load()

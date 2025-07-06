@@ -23,5 +23,9 @@ class Settings(BaseSettings):
     def cache_path(self):
         return Path(self.project_path) / "cache"
 
+    @property
+    def features_path(self):
+        return Path(self.project_path) / "src" / "features"
+
 
 settings = Settings.load()
