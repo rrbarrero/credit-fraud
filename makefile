@@ -1,7 +1,7 @@
 .PHONY: test
 
 test:
-	uv run pytest -vv
+	PYTHONPATH=. uv run pytest -vv
 
 cache_clean:
 	rm -f cache/*.joblib

@@ -4,7 +4,7 @@ This repository contains my solution approach for the [Kaggle Credit Fraud Detec
 
 ## PR-AUC Evolution
 
-| Iteración | PR-AUC |
+| Iteration | PR-AUC |
 |-----------|--------|
 | 1         | 0.8345 |
 | 2         | 0.8355 |

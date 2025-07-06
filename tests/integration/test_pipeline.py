@@ -16,7 +16,7 @@ def test_pipeline_builder():
     )
 
     assert isinstance(current.df, pl.DataFrame)
-    assert current.df.shape == (10, 53)
+    assert current.df.shape == (10, 54)
     assert set(current.df.columns) == {
         "Time",
         "V1",
@@ -71,6 +71,7 @@ def test_pipeline_builder():
         "amount_to_mean_ratio_1h",
         "amount_to_mean_ratio_24h",
         "amount_to_mean_ratio_6h",
+        "amount_percentile",
     }
 
 
@@ -122,7 +123,7 @@ def test_split_is_deterministic():
 def test_dynamic_feature_loading():
     loaded_features = DatasetPipelineBuilder.get_standards_features()
 
-    assert len(loaded_features) == 8
+    assert len(loaded_features) == 9
 
     for feature in loaded_features:
         assert isclass(feature)
