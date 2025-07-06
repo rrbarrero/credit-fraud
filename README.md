@@ -164,3 +164,51 @@ These changes led to a tangible improvement in the model's ability to distinguis
     pr_auc=np.float64(0.8372739265687769)
 )]
 </pre>
+
+### Iteration n4
+
+Building on the previous iteration, the focus remained on sophisticated feature engineering, this time targeting the transaction `Amount`.
+
+#### Summary of Changes
+
+1.  **New Feature - `AmountAggregationFeature`**: A powerful new feature was introduced to provide context about the magnitude of transactions. For each transaction, it calculates statistics (`mean`, `sum`, `std`) of the `Amount` for the preceding 1, 6, and 24-hour windows.
+
+2.  **Ratio-Based Anomaly Detection**: Crucially, this feature also computes the ratio of the current transaction's `Amount` to the mean amount of the recent time windows (e.g., `amount_to_mean_ratio_1h`). A high ratio is a strong indicator of anomalous behavior and provides a very valuable signal for the model.
+
+#### Results
+
+The inclusion of these amount-based aggregations and ratios provided another significant boost to the model's performance, further improving the PR AUC score.
+
+<pre>
+[EvaluationResult(
+    model_name='xgboost_v1', 
+    per_class={
+        '0': {
+            'precision': 0.9996470256024096, 
+            'recall': 0.9998352475993222, 
+            'f1-score': 0.9997411277416925, 
+            'support': 84976.0
+        }, 
+        '1': {
+            'precision': 0.8888888888888888, 
+            'recall': 0.7887323943661971, 
+            'f1-score': 0.835820895522388, 
+            'support': 142.0
+        }
+    }, 
+    accuracy=0.9994830705608685, 
+    macro_avg={
+        'precision': 0.9442679572456492, 
+        'recall': 0.8942838209827597, 
+        'f1-score': 0.9177810116320403, 
+        'support': 85118.0
+    }, 
+    weighted_avg={
+        'precision': 0.9994622508730535, 
+        'recall': 0.9994830705608685, 
+        'f1-score': 0.9994676641620134, 
+        'support': 85118.0
+    }, 
+    pr_auc=np.float64(0.8403338291642765)
+)]
+</pre>

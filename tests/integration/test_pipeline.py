@@ -17,7 +17,7 @@ def test_pipeline_builder():
     )
 
     assert isinstance(current.df, pl.DataFrame)
-    assert current.df.shape == (10, 41)
+    assert current.df.shape == (10, 53)
     assert set(current.df.columns) == {
         "Time",
         "V1",
@@ -60,6 +60,18 @@ def test_pipeline_builder():
         "transactions_last_1h",
         "transactions_last_24h",
         "transactions_last_6h",
+        "amount_mean_1h",
+        "amount_mean_24h",
+        "amount_mean_6h",
+        "amount_std_1h",
+        "amount_std_24h",
+        "amount_std_6h",
+        "amount_sum_1h",
+        "amount_sum_24h",
+        "amount_sum_6h",
+        "amount_to_mean_ratio_1h",
+        "amount_to_mean_ratio_24h",
+        "amount_to_mean_ratio_6h",
     }
 
 
@@ -113,7 +125,7 @@ def test_dynamic_feature_loading():
 
     loaded_features = DatasetPipelineBuilder.get_standards_features()
 
-    assert len(loaded_features) == 7
+    assert len(loaded_features) == 8
 
     for feature in loaded_features:
         assert isclass(feature)
