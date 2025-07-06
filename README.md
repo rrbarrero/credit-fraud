@@ -127,7 +127,7 @@ In this iteration, the focus was on improving the model's performance through ad
 
 2.  **New Feature - `TransactionFrequencyFeature`**: A new feature was introduced to capture the frequency of transactions within different time windows (1, 6, and 24 hours) preceding each transaction. This helps the model identify unusual bursts of activity, which are often indicative of fraudulent behavior. The implementation of this feature required careful handling of Polars' `group_by_dynamic` function to work with temporal data.
 
-### Results
+#### Results
 
 These changes led to a tangible improvement in the model's ability to distinguish between fraudulent and legitimate transactions, as reflected by the increase in the Precision-Recall AUC score.
 
