@@ -12,6 +12,7 @@ from features.hour_of_day_feature import HourOfDayFeature
 from features.is_night_feature import IsNightFeature
 from features.time_hours_feature import TimeHoursFeature
 from features.time_since_previous_feature import TimeSincePreviousFeature
+from features.transaction_frequency_feature import TransactionFrequencyFeature
 from utils.data_utils import (
     DatasetCleaner,
     DatasetCleanerProtocol,
@@ -139,6 +140,7 @@ class DatasetPipelineBuilder:
             IsNightFeature,
             AmountLogFeature,
             AmountBinFeature,
+            TransactionFrequencyFeature,
         ]
 
     @classmethod

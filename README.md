@@ -115,4 +115,52 @@ With parameters from grid_search:
 
 > [!NOTE]
 > Given that in fraud detection, recall (catching all fraud instances) is often prioritized, a small gain in recall might be considered valuable, > even if it comes with a minor trade-off in precision. The fact that PR-AUC also improved, albeit marginally, suggests the optimized model is 
-> indeed slightly better at balancing precision and recall across various thresholds."""
+> indeed slightly better at balancing precision and recall across various thresholds.
+
+### Iteration n3
+
+In this iteration, the focus was on improving the model's performance through advanced feature engineering.
+
+#### Summary of Changes
+
+1.  **Refined Balancing Strategy**: After experimentation, it was confirmed that the combination of an `OversamplingBalancer` on the training data and the `scale_pos_weight` parameter in the XGBoost model yields the best results. This dual approach ensures that the model effectively learns from the minority class (fraudulent transactions).
+
+2.  **New Feature - `TransactionFrequencyFeature`**: A new feature was introduced to capture the frequency of transactions within different time windows (1, 6, and 24 hours) preceding each transaction. This helps the model identify unusual bursts of activity, which are often indicative of fraudulent behavior. The implementation of this feature required careful handling of Polars' `group_by_dynamic` function to work with temporal data.
+
+### Results
+
+These changes led to a tangible improvement in the model's ability to distinguish between fraudulent and legitimate transactions, as reflected by the increase in the Precision-Recall AUC score.
+
+<pre>
+[EvaluationResult(
+    model_name='xgboost_v1', 
+    per_class={
+        '0': {
+            'precision': 0.9996587833862808, 
+            'recall': 0.9998234795707023, 
+            'f1-score': 0.9997411246955273, 
+            'support': 84976.0
+        }, 
+        '1': {
+            'precision': 0.8828125, 
+            'recall': 0.795774647887324, 
+            'f1-score': 0.837037037037037, 
+            'support': 142.0
+        }
+    }, 
+    accuracy=0.9994830705608685, 
+    macro_avg={
+        'precision': 0.9412356416931404, 
+        'recall': 0.8977990637290132, 
+        'f1-score': 0.9183890808662822, 
+        'support': 85118.0
+    }, 
+    weighted_avg={
+        'precision': 0.999463851970589, 
+        'recall': 0.9994830705608685, 
+        'f1-score': 0.9994696899761083, 
+        'support': 85118.0
+    }, 
+    pr_auc=np.float64(0.8372739265687769)
+)]
+</pre>
