@@ -1,4 +1,5 @@
 import polars as pl
+from features.feature import FeatureProcol
 
 
 class AmountLogFeature:
@@ -7,3 +8,7 @@ class AmountLogFeature:
 
     def apply(self) -> pl.DataFrame:
         return self.df.with_columns([(pl.col("Amount") + 1).log().alias("amountLog")])
+
+
+def register() -> list[type[FeatureProcol]]:
+    return [AmountLogFeature]

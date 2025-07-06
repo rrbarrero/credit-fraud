@@ -1,3 +1,5 @@
+import os
+import importlib.util
 import joblib
 from typing import Type
 import polars as pl
@@ -5,14 +7,7 @@ import pandas as pd
 from dataclasses import dataclass
 from balancers.balancer import BalancerProtocol
 from balancers.oversampling_balancer import OversamplingBalancer
-from features.amount_bin_feature import AmountBinFeature
-from features.amount_log_feature import AmountLogFeature
 from features.feature import FeatureProcol
-from features.hour_of_day_feature import HourOfDayFeature
-from features.is_night_feature import IsNightFeature
-from features.time_hours_feature import TimeHoursFeature
-from features.time_since_previous_feature import TimeSincePreviousFeature
-from features.transaction_frequency_feature import TransactionFrequencyFeature
 from utils.data_utils import (
     DatasetCleaner,
     DatasetCleanerProtocol,
@@ -20,6 +15,24 @@ from utils.data_utils import (
 from utils.filesystem_utils import DatasetLoader, DatasetLoaderProtocol
 from config import settings
 from sklearn.model_selection import train_test_split
+
+
+def load_features_from_path(path: str) -> list[Type[FeatureProcol]]:
+
+    features = []
+    for filename in os.listdir(path):
+        if filename.endswith(".py") and not filename.startswith("__"):
+            module_name = filename[:-3]
+            module_path = os.path.join(path, filename)
+
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            if spec and spec.loader:
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+
+                if hasattr(module, "register"):
+                    features.extend(module.register())
+    return features
 
 
 @dataclass
@@ -131,25 +144,16 @@ class DatasetPipelineBuilder:
 
         return DatasetPipeline(df)
 
-    @staticmethod
-    def get_standards_features():
-        return [
-            TimeHoursFeature,
-            HourOfDayFeature,
-            TimeSincePreviousFeature,
-            IsNightFeature,
-            AmountLogFeature,
-            AmountBinFeature,
-            TransactionFrequencyFeature,
-        ]
-
     @classmethod
     def default(cls):
         dataset_path = str(settings.data_path / "creditcard.csv.zip")
+        features_path = os.path.join(settings.project_path, "src", "features")
+
+        all_features = load_features_from_path(features_path)
 
         return (
             DatasetPipelineBuilder(DatasetLoader, DatasetCleaner)
             .with_path(dataset_path)
-            .with_features(cls.get_standards_features())
+            .with_features(all_features)
             .build()
         )

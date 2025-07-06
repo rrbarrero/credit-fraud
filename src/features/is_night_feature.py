@@ -1,4 +1,5 @@
 import polars as pl
+from features.feature import FeatureProcol
 
 
 class IsNightFeature:
@@ -16,3 +17,7 @@ class IsNightFeature:
         )
 
         return self.df.with_columns([is_night.alias("isNight")])
+
+
+def register() -> list[type[FeatureProcol]]:
+    return [IsNightFeature]

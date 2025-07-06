@@ -1,4 +1,5 @@
 import polars as pl
+from features.feature import FeatureProcol
 
 
 class TimeSincePreviousFeature:
@@ -25,3 +26,7 @@ class TimeSincePreviousFeature:
         )
 
         return df
+
+
+def register() -> list[type[FeatureProcol]]:
+    return [TimeSincePreviousFeature]

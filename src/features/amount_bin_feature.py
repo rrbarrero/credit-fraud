@@ -1,5 +1,6 @@
 import polars as pl
 from typing import Optional, List
+from features.feature import FeatureProcol
 
 
 class AmountBinFeature:
@@ -33,3 +34,7 @@ class AmountBinFeature:
         expr = expr.otherwise(pl.lit("unknown"))
 
         return self.df.with_columns([expr.alias("amountBin")])
+
+
+def register() -> list[type[FeatureProcol]]:
+    return [AmountBinFeature]
