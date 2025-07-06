@@ -2,6 +2,15 @@
 
 This repository contains my solution approach for the [Kaggle Credit Fraud Detection challenge](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). The primary goal is to build a model that accurately identifies fraudulent credit card transactions.
 
+## PR-AUC Evolution
+
+| Iteración | PR-AUC |
+|-----------|--------|
+| 1         | 0.8345 |
+| 2         | 0.8355 |
+| 3         | 0.8373 |
+| 4         | 0.8403 |
+
 ## Getting Started
 
 To run this project, follow these steps:
