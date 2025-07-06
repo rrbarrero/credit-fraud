@@ -1,18 +1,15 @@
+import os
+from inspect import isclass
 import polars as pl
 import pandas as pd
 import numpy as np
-from features.amount_bin_feature import AmountBinFeature
-from features.amount_log_feature import AmountLogFeature
-from features.hour_of_day_feature import HourOfDayFeature
-from features.is_night_feature import IsNightFeature
-from features.time_hours_feature import TimeHoursFeature
-from features.time_since_previous_feature import TimeSincePreviousFeature
-from dataset_pipeline import DatasetPipeline, DatasetPipelineBuilder
+from dataset_pipeline import DatasetPipeline
 from config import settings
 from factory import (
     create_data_pipeline_from_path_without_balancer,
     create_data_pipeline_from_path_with_oversampling_balancer,
 )
+from dataset_pipeline import load_features_from_path
 
 
 def test_pipeline_builder():
@@ -21,7 +18,7 @@ def test_pipeline_builder():
     )
 
     assert isinstance(current.df, pl.DataFrame)
-    assert current.df.shape == (10, 38)
+    assert current.df.shape == (10, 41)
     assert set(current.df.columns) == {
         "Time",
         "V1",
@@ -61,6 +58,9 @@ def test_pipeline_builder():
         "isNight",
         "amountLog",
         "amountBin",
+        "transactions_last_1h",
+        "transactions_last_24h",
+        "transactions_last_6h",
     }
 
 
@@ -110,12 +110,12 @@ def test_split_is_deterministic():
     assert y_test.equals(y_test_2)
 
 
-def test_get_feature_list():
-    assert DatasetPipelineBuilder.get_standards_features() == [
-        TimeHoursFeature,
-        HourOfDayFeature,
-        TimeSincePreviousFeature,
-        IsNightFeature,
-        AmountLogFeature,
-        AmountBinFeature,
-    ]
+def test_dynamic_feature_loading():
+    features_path = os.path.join(settings.project_path, "src", "features")
+
+    loaded_features = load_features_from_path(features_path)
+
+    assert len(loaded_features) == 7
+
+    for feature in loaded_features:
+        assert isclass(feature)

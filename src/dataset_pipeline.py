@@ -135,6 +135,12 @@ class DatasetPipelineBuilder:
         self.features = features  # type: ignore
         return self
 
+    @staticmethod
+    def get_standards_features() -> list[Type[FeatureProcol]]:
+        features_path = os.path.join(settings.project_path, "src", "features")
+
+        return load_features_from_path(features_path)
+
     def build(self) -> DatasetPipeline:
         df = self._load()
         df = self._clean(df)
@@ -147,13 +153,10 @@ class DatasetPipelineBuilder:
     @classmethod
     def default(cls):
         dataset_path = str(settings.data_path / "creditcard.csv.zip")
-        features_path = os.path.join(settings.project_path, "src", "features")
-
-        all_features = load_features_from_path(features_path)
 
         return (
             DatasetPipelineBuilder(DatasetLoader, DatasetCleaner)
             .with_path(dataset_path)
-            .with_features(all_features)
+            .with_features(cls.get_standards_features())
             .build()
         )
