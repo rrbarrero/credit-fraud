@@ -8,7 +8,6 @@ from factory import (
     create_data_pipeline_from_path_without_balancer,
     create_data_pipeline_from_path_with_oversampling_balancer,
 )
-from dataset_pipeline import load_features_from_path
 
 
 def test_pipeline_builder():
@@ -76,7 +75,6 @@ def test_pipeline_builder():
 
 
 def test_data_pipeline_split():
-
     pipeline = create_data_pipeline_from_path_with_oversampling_balancer(
         str(settings.fixtures_path / "fake_dataset.csv.zip")
     )
@@ -122,7 +120,6 @@ def test_split_is_deterministic():
 
 
 def test_dynamic_feature_loading():
-
     loaded_features = DatasetPipelineBuilder.get_standards_features()
 
     assert len(loaded_features) == 8

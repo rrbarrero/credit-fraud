@@ -23,7 +23,7 @@ def test_transaction_frequency_feature():
         }
     ).with_columns(pl.col("Time", "Amount").cast(pl.UInt32))
 
-    assert_frame_equal(result_df, expected_df, check_dtype=False)
+    assert_frame_equal(result_df, expected_df, check_dtypes=False)
 
 
 def test_transaction_frequency_empty_df():
