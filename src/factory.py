@@ -1,4 +1,5 @@
 from dataset_pipeline import DatasetPipelineBuilder
+from models.lightgbm_model import LightGBMModel
 from models.xgboost_model import XGBoostModel
 from models_pipeline import ModelsPipeline
 from utils.data_utils import DatasetCleaner
@@ -28,4 +29,6 @@ def create_data_pipeline_from_path_with_oversampling_balancer(path: str):
 
 
 def create_models_pipeline():
-    return ModelsPipeline([XGBoostModel], create_default_data_pipeline())
+    return ModelsPipeline(
+        [XGBoostModel, LightGBMModel], create_default_data_pipeline()
+    )
