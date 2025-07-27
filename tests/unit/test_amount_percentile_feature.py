@@ -1,5 +1,5 @@
 import polars as pl
-from src.features.amount_percentile_feature import AmountPercentileFeature
+from features.amount_percentile_feature import AmountPercentileFeature
 from polars.testing import assert_frame_equal
 
 
