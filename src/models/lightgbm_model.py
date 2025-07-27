@@ -1,5 +1,6 @@
 from lightgbm import LGBMClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, precision_recall_curve, auc
 
 from domain.evaluation_result import EvaluationResult
@@ -23,6 +24,7 @@ class LightGBMModel:
 
         model = Pipeline(
             [
+                ("scaler", StandardScaler()),
                 (
                     "clf",
                     LGBMClassifier(
@@ -37,7 +39,7 @@ class LightGBMModel:
                         n_estimators=300,
                         subsample=0.7,
                     ),
-                )
+                ),
             ]
         )
 

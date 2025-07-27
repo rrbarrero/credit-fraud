@@ -4,12 +4,14 @@ This repository contains my solution approach for the [Kaggle Credit Fraud Detec
 
 ## PR-AUC Evolution
 
-| Iteration | PR-AUC |
-|-----------|--------|
-| 1         | 0.8345 |
-| 2         | 0.8355 |
-| 3         | 0.8373 |
-| 4         | 0.8403 |
+| Iteration | PR-AUC (XGBoost) | PR-AUC (LightGBM) |
+|-----------|------------------|-------------------|
+| 1         | 0.8345           | -                 |
+| 2         | 0.8355           | -                 |
+| 3         | 0.8373           | -                 |
+| 4         | 0.8403           | -                 |
+| 5         | 0.8253           | 0.8060            |
+| 6         | 0.838            | 0.827             |
 
 ## Getting Started
 
